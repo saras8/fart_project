@@ -342,14 +342,17 @@
             const loader = new THREE.GLTFLoader();
             loader.load('./statueLadyExport1.glb', function(gltf) {
                 const model = gltf.scene;
+                // Wrap in a pivot group so rotation spins from center
+                const pivot = new THREE.Group();
+                scene.add(pivot);
                 const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-                const scale = 2.0 / Math.max(size.x, size.y, size.z);
-                model.scale.set(scale, scale, scale);
-                model.position.sub(center.multiplyScalar(scale));
-                scene.add(model);
-                modelScene.model = model;
+                const ctr = box.getCenter(new THREE.Vector3());
+                const sz = box.getSize(new THREE.Vector3());
+                const scl = 2.0 / Math.max(sz.x, sz.y, sz.z);
+                model.scale.set(scl, scl, scl);
+                model.position.copy(ctr.clone().multiplyScalar(-scl));
+                pivot.add(model);
+                modelScene.model = pivot;
                 const el = document.getElementById('modelLoading');
                 if (el) el.style.display = 'none';
             }, undefined, function(err) { console.error('GLB error', err); });
@@ -360,7 +363,7 @@
 
             function anim() {
                 if (!modelScene || !modelScene.renderer) return;
-                if (modelScene.model) { modelScene.model.rotation.y += 0.01; modelScene.model.rotation.x += 0.002; }
+                if (modelScene.model) { modelScene.model.rotation.y += 0.015; }
                 modelScene.renderer.render(modelScene.scene, modelScene.camera);
                 requestAnimationFrame(anim);
             }
