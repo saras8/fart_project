@@ -101,6 +101,7 @@
 
     <audio id="fartSound" preload="auto" src="https://cdn.freesound.org/previews/833/833105_17959155-lq.mp3"></audio>
     <audio id="bonusSound" preload="auto" src="https://cdn.freesound.org/previews/439/439065_7268008-lq.mp3"></audio>
+    <audio id="modelSound" preload="auto" src="https://cdn.freesound.org/previews/529/529010_2346185-lq.mp3"></audio>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -110,6 +111,7 @@
     const img = document.getElementById('statue');
     const audio = document.getElementById('fartSound');
     const bonusAudio = document.getElementById('bonusSound');
+    const modelAudio = document.getElementById('modelSound');
     const ghostRed = document.getElementById('ghostRed');
     const ghostBlue = document.getElementById('ghostBlue');
     const hint = document.getElementById('hint');
@@ -427,10 +429,12 @@
             }, 700);
         }
 
-        /* click 15: 3D model */
+        /* click 15: 3D model + its sound */
         if (clickCount % 15 === 0) {
             modelOverlay.classList.add('show');
             showStatueLady();
+            modelAudio.currentTime = 0;
+            modelAudio.play().catch(function(){});
         }
 
         /* mega glitch */
@@ -473,6 +477,31 @@
         bonusOverlay.classList.remove('show');
         bonusLabel.classList.remove('show');
         img.style.opacity = '0.8';
+    });
+
+    /* model sound ended: reset everything to original form */
+    modelAudio.addEventListener('ended', function() {
+        modelOverlay.classList.remove('show');
+        if (modelScene) {
+            if (modelScene.renderer) {
+                modelScene.renderer.dispose();
+                if (modelScene.renderer.domElement && modelScene.renderer.domElement.parentNode) {
+                    modelScene.renderer.domElement.parentNode.removeChild(modelScene.renderer.domElement);
+                }
+            }
+            if (modelScene.onResize) window.removeEventListener('resize', modelScene.onResize);
+            modelScene = null;
+        }
+        /* wipe all split layers */
+        splitGroups.forEach(function(g) { g.done = true; g.pieces = []; g.offscreenCanvas = null; });
+        splitGroups = [];
+        /* reset image */
+        img.style.opacity = '1';
+        img.style.filter = 'none';
+        ghostRed.style.transform = ''; ghostRed.style.opacity = '0';
+        ghostBlue.style.transform = ''; ghostBlue.style.opacity = '0';
+        clickCount = 0;
+        hint.textContent = '👆 click the statue';
     });
 
     /* ---- animation loop ---- */
