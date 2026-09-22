@@ -16,7 +16,6 @@
             overflow: hidden;
             position: relative;
         }
-        /* Scanlines */
         body::before {
             content: '';
             position: fixed;
@@ -59,7 +58,6 @@
         .statue:hover {
             box-shadow: 0 12px 40px rgba(0,0,0,0.7);
         }
-        /* Glitch ghosts */
         .glitch-ghost {
             position: absolute;
             top: 0;
@@ -87,8 +85,6 @@
             font-size: 0.9rem;
             opacity: 0.7;
         }
-
-        /* Sparkle canvas */
         #sparkles {
             position: fixed;
             inset: 0;
@@ -96,6 +92,69 @@
             height: 100%;
             pointer-events: none;
             z-index: 5;
+        }
+        .bonus-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .bonus-overlay.show {
+            opacity: 1;
+        }
+        .bonus-overlay img {
+            max-width: 70vw;
+            max-height: 70vh;
+            border-radius: 16px;
+            box-shadow: 0 0 80px rgba(255,0,0,0.6), 0 0 160px rgba(0,50,255,0.4);
+            animation: bonusPulse 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes bonusPulse {
+            from { transform: scale(1); filter: hue-rotate(0deg) contrast(1.2); }
+            to { transform: scale(1.05); filter: hue-rotate(30deg) contrast(1.5); }
+        }
+        .bonus-label {
+            position: fixed;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25;
+            color: #ff3333;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255,0,0,0.8), 2px 2px 0 #000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            font-family: system-ui;
+        }
+        .bonus-label.show {
+            opacity: 1;
+        }
+        .model-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            background: rgba(0,0,0,0.85);
+        }
+        .model-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #modelContainer {
+            width: 80vw;
+            height: 80vh;
         }
     </style>
 </head>
@@ -112,21 +171,46 @@
                 src="https://images.pdimagearchive.org/essays/the-spiralist/b28127833_0294-edit.jpg"
                 alt="Statue — click to make a fart sound"
                 draggable="false"
+                crossorigin="anonymous"
             />
         </div>
-        <p class="hint">👆 click the statue</p>
+        <p class="hint" id="hint">👆 click the statue</p>
     </div>
 
+    <div class="bonus-overlay" id="bonusOverlay">
+        <img src="https://media.istockphoto.com/id/497185659/de/foto/butt-des-hercules.jpg?s=612x612&w=0&k=20&c=g_qvrcgJlVIrZrNLHD-j4x86Tpnacz5yUAjVRRxRQ1g=" alt="statue butt" />
+    </div>
+    <div class="bonus-label" id="bonusLabel">🔥 BONUS ROUND 🔥</div>
+
     <audio id="fartSound" preload="auto" src="https://cdn.freesound.org/previews/833/833105_17959155-lq.mp3"></audio>
+    <audio id="bonusSound" preload="auto" src="https://cdn.freesound.org/previews/439/439065_7268008-lq.mp3"></audio>
+    <audio id="ladySound" preload="auto" src="https://cdn.freesound.org/previews/262/262274_989468-lq.mp3"></audio>
+
+    <!-- 3D viewer for statue lady -->
+    <div class="model-overlay" id="modelOverlay">
+        <div id="modelContainer"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
         const img = document.getElementById('statue');
         const audio = document.getElementById('fartSound');
+        const bonusAudio = document.getElementById('bonusSound');
+        let clickCount = 0;
         const ghostRed = document.getElementById('ghostRed');
         const ghostBlue = document.getElementById('ghostBlue');
         const wrapper = document.getElementById('statueWrapper');
+        const hint = document.getElementById('hint');
+        const bonusOverlay = document.getElementById('bonusOverlay');
+        const bonusLabel = document.getElementById('bonusLabel');
+        const ladyAudio = document.getElementById('ladySound');
+        const modelOverlay = document.getElementById('modelOverlay');
+        const modelContainer = document.getElementById('modelContainer');
         const canvas = document.getElementById('sparkles');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
+        let modelScene = null;
 
         let W, H;
 
@@ -142,9 +226,7 @@
         const SPARKLE_COUNT = 120;
 
         class Sparkle {
-            constructor() {
-                this.reset();
-            }
+            constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * W;
                 this.y = Math.random() * H;
@@ -153,15 +235,13 @@
                 this.speedY = (Math.random() - 0.5) * 3 + 1;
                 this.life = Math.random() * 60 + 40;
                 this.maxLife = this.life;
-                this.hue = Math.random() > 0.5 ? 0 : 230; // red or blue
+                this.hue = Math.random() > 0.5 ? 0 : 230;
                 this.glitch = false;
             }
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
                 this.life--;
-
-                // Random glitch teleport
                 if (Math.random() < 0.005) {
                     this.x += (Math.random() - 0.5) * 200;
                     this.y += (Math.random() - 0.5) * 100;
@@ -169,7 +249,6 @@
                 } else {
                     this.glitch = false;
                 }
-
                 if (this.life <= 0 || this.x < -50 || this.x > W + 50 || this.y < -50 || this.y > H + 50) {
                     this.reset();
                     this.life = Math.random() * 60 + 40;
@@ -178,33 +257,24 @@
             draw() {
                 const alpha = Math.max(0, this.life / this.maxLife);
                 const size = this.glitch ? this.size * 3 : this.size;
-
                 ctx.save();
                 ctx.shadowBlur = this.glitch ? 20 : 10;
                 ctx.shadowColor = this.hue === 0 ? `rgba(255,0,0,${alpha})` : `rgba(0,100,255,${alpha})`;
-
-                // Cross shape
                 ctx.strokeStyle = this.hue === 0
                     ? `rgba(255,${50 + Math.random()*50},${50 + Math.random()*50},${alpha})`
                     : `rgba(${50 + Math.random()*50},${100 + Math.random()*50},255,${alpha})`;
                 ctx.lineWidth = 1.5;
-
                 ctx.beginPath();
                 ctx.moveTo(this.x - size, this.y);
                 ctx.lineTo(this.x + size, this.y);
                 ctx.moveTo(this.x, this.y - size);
                 ctx.lineTo(this.x, this.y + size);
                 ctx.stroke();
-
-                // Center dot
-                ctx.fillStyle = this.hue === 0
-                    ? `rgba(255,50,50,${alpha})`
-                    : `rgba(50,100,255,${alpha})`;
+                ctx.fillStyle = this.hue === 0 ? `rgba(255,50,50,${alpha})` : `rgba(50,100,255,${alpha})`;
                 ctx.shadowBlur = 0;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, size * 0.3, 0, Math.PI * 2);
                 ctx.fill();
-
                 ctx.restore();
             }
         }
@@ -215,25 +285,18 @@
 
         // ─── Glitch timing ───
         let glitchActive = false;
-        let glitchTimer = 0;
 
         function triggerGlitchBurst() {
             glitchActive = true;
-            glitchTimer = 0;
-
-            // Randomize ghost positions
-            const offsetX = (Math.random() - 0.5) * 20;
-            const offsetY = (Math.random() - 0.5) * 10;
-            ghostRed.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-            ghostBlue.style.transform = `translate(${-offsetX}px, ${-offsetY}px)`;
-
-            // Glitch out the image
+            const ox = (Math.random() - 0.5) * 20;
+            const oy = (Math.random() - 0.5) * 10;
+            ghostRed.style.transform = `translate(${ox}px, ${oy}px)`;
+            ghostBlue.style.transform = `translate(${-ox}px, ${-oy}px)`;
             img.style.filter = `
                 hue-rotate(${Math.random() * 360}deg)
                 contrast(${1.5 + Math.random() * 2})
                 brightness(${1 + Math.random() * 0.5})
             `;
-
             setTimeout(() => {
                 glitchActive = false;
                 ghostRed.style.transform = 'translate(0,0)';
@@ -242,19 +305,302 @@
             }, 150 + Math.random() * 200);
         }
 
-        // Random glitch every 1-4 seconds
         setInterval(() => {
             if (!glitchActive && Math.random() < 0.4) {
                 triggerGlitchBurst();
             }
         }, 1000 + Math.random() * 3000);
 
-        // ─── Fart trigger — mega glitch ───
+        // ─── Image split-spin system — multi-layer ───
+        let splitGroups = [];
+        let layerCount = 0;
+
+        function captureImage() {
+            const rect = img.getBoundingClientRect();
+            const offscreen = document.createElement('canvas');
+            offscreen.width = rect.width;
+            offscreen.height = rect.height;
+            const offCtx = offscreen.getContext('2d');
+            offCtx.drawImage(img, 0, 0, rect.width, rect.height);
+            return { canvas: offscreen, rect };
+        }
+
+        function createSplitGroup() {
+            const { canvas: offscreenCanvas, rect } = captureImage();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const NUM_SLICES = 8 + Math.floor(Math.random() * 4);
+            const pieces = [];
+
+            for (let i = 0; i < NUM_SLICES; i++) {
+                const angleA = (i / NUM_SLICES) * Math.PI * 2;
+                const angleB = ((i + 1) / NUM_SLICES) * Math.PI * 2;
+
+                const orbitRadius = 60 + Math.random() * 150 + layerCount * 15;
+                const orbitSpeed = (0.006 + Math.random() * 0.014) * (Math.random() > 0.5 ? 1 : -1);
+                const selfSpin = (0.02 + Math.random() * 0.035) * (Math.random() > 0.5 ? 1 : -1);
+
+                pieces.push({
+                    angleA, angleB,
+                    currentAngle: Math.random() * Math.PI * 2,
+                    orbitRadius,
+                    orbitSpeed,
+                    selfRotation: 0,
+                    selfSpin,
+                    currentRadius: 8,
+                    targetRadius: orbitRadius,
+                    opacity: 1,
+                    rect, cx, cy,
+                    expandProgress: 0,
+                    phase: 'expanding',
+                    returnProgress: 0,
+                    returnStartRadius: 0,
+                    homeX: cx,
+                    homeY: cy,
+                });
+            }
+
+            const group = {
+                pieces,
+                offscreenCanvas,
+                phase: 'expanding',
+                age: 0,
+                id: layerCount++,
+                done: false,
+            };
+
+            splitGroups.push(group);
+            return group;
+        }
+
+        function returnLatestGroup() {
+            if (!splitGroups.length) return;
+            for (let i = splitGroups.length - 1; i >= 0; i--) {
+                const g = splitGroups[i];
+                if (g.phase === 'returning' || g.done) continue;
+                g.phase = 'returning';
+                for (const p of g.pieces) {
+                    p.returnStartRadius = p.currentRadius;
+                    p.returnProgress = 0;
+                    p.homeX = p.cx + (Math.random() - 0.5) * 4;
+                    p.homeY = p.cy + (Math.random() - 0.5) * 4;
+                }
+                break;
+            }
+        }
+
+        function drawSplitPieces() {
+            // Draw oldest groups first (lower layers)
+            for (let gi = 0; gi < splitGroups.length; gi++) {
+                const group = splitGroups[gi];
+                group.age++;
+
+                if (group.done) continue;
+
+                // Auto-remove groups older than ~25 seconds
+                if (group.age > 1500 && group.phase === 'orbiting') {
+                    group.phase = 'returning';
+                    for (const p of group.pieces) {
+                        p.returnStartRadius = p.currentRadius;
+                        p.returnProgress = 0;
+                        p.homeX = p.cx + (Math.random() - 0.5) * 4;
+                        p.homeY = p.cy + (Math.random() - 0.5) * 4;
+                    }
+                }
+
+                let anyAlive = false;
+
+                for (const p of group.pieces) {
+                    if (p.opacity < 0.005) continue;
+                    anyAlive = true;
+
+                    if (p.phase === 'expanding') {
+                        p.expandProgress = Math.min(1, p.expandProgress + 0.025);
+                        const ease = 1 - Math.pow(1 - p.expandProgress, 3);
+                        p.currentRadius = 8 + (p.targetRadius - 8) * ease;
+                        p.currentAngle += p.orbitSpeed * ease;
+                        p.selfRotation += p.selfSpin * ease;
+                        if (p.expandProgress >= 1) p.phase = 'orbiting';
+                    }
+
+                    if (p.phase === 'orbiting') {
+                        p.currentAngle += p.orbitSpeed;
+                        p.selfRotation += p.selfSpin;
+                    }
+
+                    if (p.phase === 'returning') {
+                        p.returnProgress = Math.min(1, p.returnProgress + 0.018);
+                        const ease = 1 - Math.pow(1 - p.returnProgress, 3);
+                        p.currentRadius = p.returnStartRadius * (1 - ease);
+                        p.currentAngle += p.orbitSpeed * (1 - ease) * 0.4;
+                        p.selfRotation += p.selfSpin * (1 - ease) * 0.2;
+                        p.opacity = Math.max(0, 1 - ease);
+                    }
+
+                    const ox = p.cx + Math.cos(p.currentAngle) * p.currentRadius;
+                    const oyVal = p.cy + Math.sin(p.currentAngle) * p.currentRadius;
+
+                    ctx.save();
+                    ctx.globalAlpha = p.opacity;
+                    ctx.translate(ox, oyVal);
+                    ctx.rotate(p.selfRotation);
+
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.arc(0, 0, p.rect.width * 1.5, p.angleA, p.angleB);
+                    ctx.closePath();
+                    ctx.clip();
+                    ctx.translate(-p.cx, -p.cy);
+                    ctx.drawImage(group.offscreenCanvas, p.rect.left, p.rect.top, p.rect.width, p.rect.height);
+
+                    // Tint each layer differently
+                    const tintHue = (group.id * 37) % 360;
+                    ctx.globalCompositeOperation = 'screen';
+                    ctx.fillStyle = `hsla(${tintHue}, 80%, 50%, ${0.08 + (group.id % 3) * 0.04})`;
+                    ctx.fillRect(p.rect.left, p.rect.top, p.rect.width, p.rect.height);
+                    ctx.globalCompositeOperation = 'source-over';
+
+                    ctx.restore();
+                }
+
+                if (!anyAlive && group.phase === 'returning') {
+                    group.done = true;
+                    group.pieces = [];
+                    group.offscreenCanvas = null;
+                }
+            }
+
+            // Clean up done groups
+            splitGroups = splitGroups.filter(g => !g.done);
+
+        /* --- Show statue lady 3D model on click 15 --- */
+        function showStatueLady() {
+            if (modelScene) return;
+            modelScene = {};
+            try {
+                var scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x0a0a0a);
+                
+                var camera = new THREE.PerspectiveCamera(45, modelContainer.clientWidth / modelContainer.clientHeight, 0.1, 100);
+                camera.position.set(0, 0.5, 3);
+                
+                var renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.setSize(modelContainer.clientWidth, modelContainer.clientHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                modelContainer.appendChild(renderer.domElement);
+                
+                /* Lights */
+                var ambient = new THREE.AmbientLight(0x404060, 0.5);
+                scene.add(ambient);
+                var dirLight = new THREE.DirectionalLight(0xff4444, 1.2);
+                dirLight.position.set(2, 3, 4);
+                scene.add(dirLight);
+                var dirLight2 = new THREE.DirectionalLight(0x4444ff, 1.0);
+                dirLight2.position.set(-2, 1, 3);
+                scene.add(dirLight2);
+                
+                /* Load the GLB model */
+                var loader = new THREE.GLTFLoader();
+                loader.load(
+                    "./statueLadyExport1.glb",
+                    function(gltf) {
+                        var model = gltf.scene;
+                        /* Center the model */
+                        var box = new THREE.Box3().setFromObject(model);
+                        var center = box.getCenter(new THREE.Vector3());
+                        var size = box.getSize(new THREE.Vector3());
+                        var maxDim = Math.max(size.x, size.y, size.z);
+                        var scale = 2.0 / maxDim;
+                        model.scale.set(scale, scale, scale);
+                        model.position.sub(center.multiplyScalar(scale));
+                        scene.add(model);
+                        modelScene.model = model;
+                    },
+                    undefined,
+                    function(err) { console.error("GLB load error:", err); hint.textContent = "🗿 3D load error: " + err; }
+                );
+                
+                modelScene.scene = scene;
+                modelScene.camera = camera;
+                modelScene.renderer = renderer;
+                
+                /* Animation loop */
+                var rotSpeed = 0.01;
+                function animateModel() {
+                    if (!modelScene || !modelScene.renderer) return;
+                    if (modelScene.model) {
+                        modelScene.model.rotation.y += rotSpeed;
+                        modelScene.model.rotation.x += rotSpeed * 0.2;
+                    }
+                    modelScene.renderer.render(modelScene.scene, modelScene.camera);
+                    requestAnimationFrame(animateModel);
+                }
+                animateModel();
+                
+                /* Resize handler */
+                function onModelResize() {
+                    if (!modelScene || !modelScene.renderer) return;
+                    modelScene.camera.aspect = modelContainer.clientWidth / modelContainer.clientHeight;
+                    modelScene.camera.updateProjectionMatrix();
+                    modelScene.renderer.setSize(modelContainer.clientWidth, modelContainer.clientHeight);
+                }
+                window.addEventListener("resize", onModelResize);
+                modelScene.onResize = onModelResize;
+            } catch(e) { console.error("Three.js error:", e); }
+        }
+
+        }
+
+        // ─── Fart trigger with multi-layer split-spin ───
         img.addEventListener('click', () => {
+            clickCount++;
+            hint.textContent = `👆 clicks: ${clickCount} ${clickCount % 10 === 0 ? '🔥 BONUS ROUND 🔥' : '| click the statue'}`;
             audio.currentTime = 0;
             audio.play().catch(() => {});
 
-            // Mega glitch burst
+            // Every 10th click: bonus climax sound
+            if (clickCount % 10 === 0) {
+                bonusAudio.currentTime = 0;
+                bonusAudio.play().catch(() => {});
+                // Show the bonus overlay
+                bonusOverlay.classList.add('show');
+                bonusLabel.classList.add('show');
+                // Mega-glitch burst on the 10th
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        const ox = (Math.random() - 0.5) * 50;
+                        const oy = (Math.random() - 0.5) * 25;
+                        ghostRed.style.transform = `translate(${ox}px,${oy}px)`;
+                        ghostRed.style.opacity = Math.random() * 0.7 + 0.3;
+                        ghostBlue.style.transform = `translate(${-ox}px,${-oy}px)`;
+                        ghostBlue.style.opacity = Math.random() * 0.7 + 0.3;
+                        img.style.filter = `
+                            hue-rotate(${Math.random() * 360}deg)
+                            contrast(${3 + Math.random() * 4})
+                            brightness(${1.5 + Math.random() * 1.5})
+                            saturate(${3 + Math.random() * 3})
+                        `;
+                    }, i * 40);
+                }
+                setTimeout(() => {
+                    ghostRed.style.transform = 'translate(0,0)';
+                    ghostRed.style.opacity = '0';
+                    ghostBlue.style.transform = 'translate(0,0)';
+                    ghostBlue.style.opacity = '0';
+                    img.style.filter = 'none';
+                }, 700);
+            }
+
+            // Every 15th click: statue lady 3D model
+            if (clickCount % 15 === 0) {
+                ladyAudio.currentTime = 0;
+                ladyAudio.play().catch(() => {});
+                modelOverlay.classList.add('show');
+                showStatueLady();
+                hint.textContent = `👆 clicks: ${clickCount} 🗿 STATUE LADY 🗿`;
+            }
+
+            // Mega glitch
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
                     const ox = (Math.random() - 0.5) * 30;
@@ -272,20 +618,63 @@
                 }, i * 60);
             }
             setTimeout(() => {
-                glitchActive = false;
                 ghostRed.style.transform = 'translate(0,0)';
                 ghostRed.style.opacity = '0';
                 ghostBlue.style.transform = 'translate(0,0)';
                 ghostBlue.style.opacity = '0';
                 img.style.filter = 'none';
+                if (!splitActive) img.style.opacity = '1';
             }, 400);
+
+            // Add a new split layer
+            const newGroup = createSplitGroup();
+            const depth = Math.min(splitGroups.length, 10);
+            img.style.opacity = `${Math.max(0.05, 1 - depth * 0.08)}`;
         });
 
-        // ─── Sparkle animation loop ───
+        // When fart sound ends: return the most recent split layer
+        audio.addEventListener('ended', () => {
+            returnLatestGroup();
+            const activeLayers = splitGroups.filter(g => !g.done && g.phase !== 'returning').length;
+            img.style.opacity = `${Math.max(0.1, 1 - activeLayers * 0.08)}`;
+        });
+
+        // When statue lady sound ends: hide the 3D model
+        ladyAudio.addEventListener('ended', () => {
+            modelOverlay.classList.remove('show');
+            if (modelScene) {
+                modelScene.renderer.dispose();
+                if (modelScene.renderer.domElement && modelScene.renderer.domElement.parentNode) {
+                    modelScene.renderer.domElement.parentNode.removeChild(modelScene.renderer.domElement);
+                }
+                modelScene = null;
+            }
+        });
+
+        // When bonus sound ends: return ALL layers at once (clean sweep)
+        bonusAudio.addEventListener('ended', () => {
+            let count = 0;
+            for (const g of splitGroups) {
+                if (g.phase === 'returning' || g.done) continue;
+                g.phase = 'returning';
+                for (const p of g.pieces) {
+                    p.returnStartRadius = p.currentRadius;
+                    p.returnProgress = 0;
+                    p.homeX = p.cx + (Math.random() - 0.5) * 4;
+                    p.homeY = p.cy + (Math.random() - 0.5) * 4;
+                }
+                count++;
+            }
+            bonusOverlay.classList.remove('show');
+            bonusLabel.classList.remove('show');
+            img.style.opacity = '0.8';
+        });
+
+        // ─── Animation loop ───
         function animate() {
             ctx.clearRect(0, 0, W, H);
 
-            // Every few frames: full-screen glitch line
+            // Glitch bars
             if (Math.random() < 0.02) {
                 const y = Math.random() * H;
                 const h = Math.random() * 4 + 1;
@@ -298,8 +687,6 @@
                 ctx.fillStyle = fill;
                 ctx.fillRect(0, y, W, h);
             }
-
-            // Random colorful bars
             if (Math.random() < 0.01) {
                 const y = Math.random() * H;
                 const h = Math.random() * 3 + 1;
@@ -309,6 +696,10 @@
                 ctx.fillRect(0, y, W, h);
             }
 
+            // Draw split-spin pieces
+            drawSplitPieces();
+
+            // Sparkles
             for (const s of sparkles) {
                 s.update();
                 s.draw();
