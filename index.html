@@ -20,97 +20,39 @@
             content: '';
             position: fixed;
             inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.08) 2px,
-                rgba(0,0,0,0.08) 4px
-            );
-            pointer-events: none;
-            z-index: 10;
+            background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
+            pointer-events: none; z-index: 10;
         }
-        .container {
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-        .statue-wrapper {
-            position: relative;
-            display: inline-block;
-        }
+        .container { text-align: center; padding: 2rem; position: relative; z-index: 1; }
+        .statue-wrapper { position: relative; display: inline-block; }
         .statue {
-            max-width: 90vw;
-            max-height: 80vh;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            cursor: pointer;
+            max-width: 90vw; max-height: 80vh; border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5); cursor: pointer;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
-            display: block;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
+            display: block; margin: 0 auto; position: relative; z-index: 1;
         }
-        .statue:active {
-            transform: scale(0.97);
-        }
-        .statue:hover {
-            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-        }
+        .statue:active { transform: scale(0.97); }
+        .statue:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.7); }
         .glitch-ghost {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 12px;
-            pointer-events: none;
-            z-index: 0;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 12px; pointer-events: none; z-index: 0;
+            background-size: cover; background-position: center; opacity: 0;
         }
-        .glitch-ghost--red {
-            background-color: rgba(255,0,0,0.15);
-            mix-blend-mode: screen;
-        }
-        .glitch-ghost--blue {
-            background-color: rgba(0,0,255,0.15);
-            mix-blend-mode: screen;
-        }
-        .hint {
-            color: #888;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-        #sparkles {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
+        .glitch-ghost--red { background-color: rgba(255,0,0,0.15); mix-blend-mode: screen; }
+        .glitch-ghost--blue { background-color: rgba(0,0,255,0.15); mix-blend-mode: screen; }
+        .hint { color: #888; margin-top: 1rem; font-size: 0.9rem; opacity: 0.7; }
+        #glitchCanvas {
+            position: fixed; inset: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 5;
         }
         .bonus-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 20;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            position: fixed; inset: 0; z-index: 20;
+            display: flex; justify-content: center; align-items: center;
+            pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
         }
-        .bonus-overlay.show {
-            opacity: 1;
-        }
+        .bonus-overlay.show { opacity: 1; }
         .bonus-overlay img {
-            max-width: 70vw;
-            max-height: 70vh;
-            border-radius: 16px;
+            max-width: 70vw; max-height: 70vh; border-radius: 16px;
             box-shadow: 0 0 80px rgba(255,0,0,0.6), 0 0 160px rgba(0,50,255,0.4);
             animation: bonusPulse 0.5s ease-in-out infinite alternate;
         }
@@ -119,60 +61,32 @@
             to { transform: scale(1.05); filter: hue-rotate(30deg) contrast(1.5); }
         }
         .bonus-label {
-            position: fixed;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 25;
-            color: #ff3333;
-            font-size: 2.5rem;
-            font-weight: bold;
+            position: fixed; bottom: 10%; left: 50%; transform: translateX(-50%);
+            z-index: 25; color: #ff3333; font-size: 2.5rem; font-weight: bold;
             text-shadow: 0 0 20px rgba(255,0,0,0.8), 2px 2px 0 #000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            font-family: system-ui;
+            opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
         }
-        .bonus-label.show {
-            opacity: 1;
-        }
+        .bonus-label.show { opacity: 1; }
         .model-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 30;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
+            position: fixed; inset: 0; z-index: 30;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
             background: rgba(0,0,0,0.85);
         }
-        .model-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        #modelContainer {
-            width: 80vw;
-            height: 80vh;
-        }
+        .model-overlay.show { opacity: 1; pointer-events: auto; }
+        #modelContainer { width: 80vw; height: 80vh; }
     </style>
 </head>
 <body>
-    <canvas id="sparkles"></canvas>
+    <canvas id="glitchCanvas"></canvas>
 
     <div class="container">
         <div class="statue-wrapper" id="statueWrapper">
             <div class="glitch-ghost glitch-ghost--red" id="ghostRed"></div>
             <div class="glitch-ghost glitch-ghost--blue" id="ghostBlue"></div>
-            <img
-                id="statue"
-                class="statue"
+            <img id="statue" class="statue"
                 src="https://images.pdimagearchive.org/essays/the-spiralist/b28127833_0294-edit.jpg"
-                alt="Statue — click to make a fart sound"
-                draggable="false"
-                crossorigin="anonymous"
-            />
+                alt="Statue — click" draggable="false" crossorigin="anonymous" />
         </div>
         <p class="hint" id="hint">👆 click the statue</p>
     </div>
@@ -182,532 +96,392 @@
     </div>
     <div class="bonus-label" id="bonusLabel">🔥 BONUS ROUND 🔥</div>
 
+    <div class="model-overlay" id="modelOverlay">
+        <div id="modelContainer"><div id="modelLoading" style="color:#888;text-align:center;padding:40px;font-size:1.2rem;">Loading...</div></div>
+    </div>
+
     <audio id="fartSound" preload="auto" src="https://cdn.freesound.org/previews/833/833105_17959155-lq.mp3"></audio>
     <audio id="bonusSound" preload="auto" src="https://cdn.freesound.org/previews/439/439065_7268008-lq.mp3"></audio>
-    <audio id="ladySound" preload="auto" src="https://cdn.freesound.org/previews/262/262274_989468-lq.mp3"></audio>
-
-    <!-- 3D viewer for statue lady -->
-    <div class="model-overlay" id="modelOverlay">
-        <div id="modelContainer"></div>
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
-        const img = document.getElementById('statue');
-        const audio = document.getElementById('fartSound');
-        const bonusAudio = document.getElementById('bonusSound');
-        let clickCount = 0;
-        const ghostRed = document.getElementById('ghostRed');
-        const ghostBlue = document.getElementById('ghostBlue');
-        const wrapper = document.getElementById('statueWrapper');
-        const hint = document.getElementById('hint');
-        const bonusOverlay = document.getElementById('bonusOverlay');
-        const bonusLabel = document.getElementById('bonusLabel');
-        const ladyAudio = document.getElementById('ladySound');
-        const modelOverlay = document.getElementById('modelOverlay');
-        const modelContainer = document.getElementById('modelContainer');
-        const canvas = document.getElementById('sparkles');
-        const ctx = canvas.getContext("2d");
-        let modelScene = null;
+    /* ---- setup ---- */
+    const img = document.getElementById('statue');
+    const audio = document.getElementById('fartSound');
+    const bonusAudio = document.getElementById('bonusSound');
+    const ghostRed = document.getElementById('ghostRed');
+    const ghostBlue = document.getElementById('ghostBlue');
+    const hint = document.getElementById('hint');
+    const bonusOverlay = document.getElementById('bonusOverlay');
+    const bonusLabel = document.getElementById('bonusLabel');
+    const modelOverlay = document.getElementById('modelOverlay');
+    const modelContainer = document.getElementById('modelContainer');
+    const cvs = document.getElementById('glitchCanvas');
+    const ctx = cvs.getContext('2d');
 
-        let W, H;
+    let W, H;
+    function resize() { W = cvs.width = window.innerWidth; H = cvs.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
 
-        function resize() {
-            W = canvas.width = window.innerWidth;
-            H = canvas.height = window.innerHeight;
+    let clickCount = 0;
+
+    /* ---- sparkle particles ---- */
+    const sparkles = [];
+    for (let i = 0; i < 140; i++) {
+        sparkles.push({
+            x: Math.random() * W, y: Math.random() * H,
+            size: Math.random() * 4 + 1,
+            sx: (Math.random() - 0.5) * 3, sy: (Math.random() - 0.5) * 3 + 1,
+            life: Math.random() * 60 + 40, maxLife: 0,
+            hue: Math.random() > 0.5 ? 0 : 230,
+            glitch: false
+        });
+        sparkles[i].maxLife = sparkles[i].life;
+    }
+
+    function resetSparkle(s) {
+        s.x = Math.random() * W; s.y = Math.random() * H;
+        s.sx = (Math.random() - 0.5) * 3; s.sy = (Math.random() - 0.5) * 3 + 1;
+        s.life = Math.random() * 60 + 40; s.maxLife = s.life;
+        s.glitch = false;
+    }
+
+    function drawSparkles() {
+        for (const s of sparkles) {
+            s.x += s.sx; s.y += s.sy; s.life--;
+            if (Math.random() < 0.005) { s.x += (Math.random() - 0.5) * 200; s.y += (Math.random() - 0.5) * 100; s.glitch = true; }
+            else { s.glitch = false; }
+            if (s.life <= 0 || s.x < -50 || s.x > W + 50 || s.y < -50 || s.y > H + 50) { resetSparkle(s); }
+            const alpha = Math.max(0, s.life / s.maxLife);
+            const size = s.glitch ? s.size * 3 : s.size;
+            ctx.save();
+            ctx.shadowBlur = s.glitch ? 20 : 10;
+            ctx.shadowColor = s.hue === 0 ? `rgba(255,0,0,${alpha})` : `rgba(0,100,255,${alpha})`;
+            ctx.strokeStyle = s.hue === 0
+                ? `rgba(255,${50+Math.random()*50},${50+Math.random()*50},${alpha})`
+                : `rgba(${50+Math.random()*50},${100+Math.random()*50},255,${alpha})`;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(s.x - size, s.y); ctx.lineTo(s.x + size, s.y);
+            ctx.moveTo(s.x, s.y - size); ctx.lineTo(s.x, s.y + size); ctx.stroke();
+            ctx.fillStyle = s.hue === 0 ? `rgba(255,50,50,${alpha})` : `rgba(50,100,255,${alpha})`;
+            ctx.shadowBlur = 0; ctx.beginPath(); ctx.arc(s.x, s.y, size * 0.3, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
         }
-        resize();
-        window.addEventListener('resize', resize);
+    }
 
-        // ─── Sparkle particles ───
-        const sparkles = [];
-        const SPARKLE_COUNT = 120;
+    /* ---- glitch bars ---- */
+    function drawGlitchBars() {
+        if (Math.random() < 0.02) {
+            const y = Math.random() * H, h = Math.random() * 4 + 1;
+            const g = ctx.createLinearGradient(0, y, W, y);
+            g.addColorStop(0, `rgba(255,0,0,${Math.random()*0.3})`);
+            g.addColorStop(0.3, `rgba(255,0,0,0)`);
+            g.addColorStop(0.5, `rgba(0,100,255,${Math.random()*0.3})`);
+            g.addColorStop(0.7, `rgba(0,100,255,0)`);
+            g.addColorStop(1, `rgba(255,0,0,${Math.random()*0.3})`);
+            ctx.fillStyle = g; ctx.fillRect(0, y, W, h);
+        }
+        if (Math.random() < 0.01) {
+            const y = Math.random() * H, h = Math.random() * 3 + 1;
+            ctx.fillStyle = Math.random() > 0.5 ? `rgba(255,0,0,${Math.random()*0.15})` : `rgba(0,100,255,${Math.random()*0.15})`;
+            ctx.fillRect(0, y, W, h);
+        }
+    }
 
-        class Sparkle {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * W;
-                this.y = Math.random() * H;
-                this.size = Math.random() * 4 + 1;
-                this.speedX = (Math.random() - 0.5) * 3;
-                this.speedY = (Math.random() - 0.5) * 3 + 1;
-                this.life = Math.random() * 60 + 40;
-                this.maxLife = this.life;
-                this.hue = Math.random() > 0.5 ? 0 : 230;
-                this.glitch = false;
+    /* ---- auto glitch ---- */
+    let glitchActive = false;
+    function autoGlitch() {
+        if (glitchActive) return;
+        glitchActive = true;
+        const ox = (Math.random() - 0.5) * 20, oy = (Math.random() - 0.5) * 10;
+        ghostRed.style.transform = `translate(${ox}px,${oy}px)`;
+        ghostBlue.style.transform = `translate(${-ox}px,${-oy}px)`;
+        img.style.filter = `hue-rotate(${Math.random()*360}deg) contrast(${1.5+Math.random()*2}) brightness(${1+Math.random()*0.5})`;
+        setTimeout(() => {
+            glitchActive = false;
+            ghostRed.style.transform = ''; ghostBlue.style.transform = '';
+            img.style.filter = 'none';
+        }, 150 + Math.random() * 200);
+    }
+    setInterval(() => { if (!glitchActive && Math.random() < 0.4) autoGlitch(); }, 1000 + Math.random() * 3000);
+
+    /* ---- split-spin multi-layer ---- */
+    let splitGroups = [];
+    let layerCount = 0;
+
+    function captureImage() {
+        const rect = img.getBoundingClientRect();
+        const os = document.createElement('canvas');
+        os.width = rect.width; os.height = rect.height;
+        os.getContext('2d').drawImage(img, 0, 0, rect.width, rect.height);
+        return { canvas: os, rect };
+    }
+
+    function createSplitGroup() {
+        const { canvas: offscreenCanvas, rect } = captureImage();
+        const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+        const n = 8 + Math.floor(Math.random() * 4);
+        const pieces = [];
+        for (let i = 0; i < n; i++) {
+            const aA = (i / n) * Math.PI * 2, aB = ((i + 1) / n) * Math.PI * 2;
+            pieces.push({
+                angleA: aA, angleB: aB,
+                currentAngle: Math.random() * Math.PI * 2,
+                orbitRadius: 60 + Math.random() * 150 + layerCount * 15,
+                orbitSpeed: (0.006 + Math.random() * 0.014) * (Math.random() > 0.5 ? 1 : -1),
+                selfRotation: 0,
+                selfSpin: (0.02 + Math.random() * 0.035) * (Math.random() > 0.5 ? 1 : -1),
+                currentRadius: 8, targetRadius: 0,
+                opacity: 1, rect, cx, cy,
+                expandProgress: 0, phase: 'expanding',
+                returnProgress: 0, returnStartRadius: 0,
+                homeX: cx, homeY: cy
+            });
+            pieces[i].targetRadius = pieces[i].orbitRadius;
+        }
+        const g = { pieces, offscreenCanvas, phase: 'expanding', age: 0, id: layerCount++, done: false };
+        splitGroups.push(g);
+        return g;
+    }
+
+    function returnLatestGroup() {
+        for (let i = splitGroups.length - 1; i >= 0; i--) {
+            const g = splitGroups[i];
+            if (g.phase === 'returning' || g.done) continue;
+            g.phase = 'returning';
+            for (const p of g.pieces) { p.returnStartRadius = p.currentRadius; p.returnProgress = 0; p.homeX = p.cx + (Math.random() - 0.5) * 4; p.homeY = p.cy + (Math.random() - 0.5) * 4; }
+            break;
+        }
+    }
+
+    function drawSplitPieces() {
+        for (let gi = 0; gi < splitGroups.length; gi++) {
+            const group = splitGroups[gi];
+            if (group.done) continue;
+            group.age++;
+
+            if (group.age > 1500 && group.phase === 'orbiting') {
+                group.phase = 'returning';
+                for (const p of group.pieces) { p.returnStartRadius = p.currentRadius; p.returnProgress = 0; }
             }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.life--;
-                if (Math.random() < 0.005) {
-                    this.x += (Math.random() - 0.5) * 200;
-                    this.y += (Math.random() - 0.5) * 100;
-                    this.glitch = true;
-                } else {
-                    this.glitch = false;
+
+            let alive = false;
+            for (const p of group.pieces) {
+                if (p.opacity < 0.005) continue;
+                alive = true;
+
+                if (p.phase === 'expanding') {
+                    p.expandProgress = Math.min(1, p.expandProgress + 0.025);
+                    const e = 1 - Math.pow(1 - p.expandProgress, 3);
+                    p.currentRadius = 8 + (p.targetRadius - 8) * e;
+                    p.currentAngle += p.orbitSpeed * e;
+                    p.selfRotation += p.selfSpin * e;
+                    if (p.expandProgress >= 1) p.phase = 'orbiting';
                 }
-                if (this.life <= 0 || this.x < -50 || this.x > W + 50 || this.y < -50 || this.y > H + 50) {
-                    this.reset();
-                    this.life = Math.random() * 60 + 40;
+                if (p.phase === 'orbiting') { p.currentAngle += p.orbitSpeed; p.selfRotation += p.selfSpin; }
+                if (p.phase === 'returning') {
+                    p.returnProgress = Math.min(1, p.returnProgress + 0.018);
+                    const e = 1 - Math.pow(1 - p.returnProgress, 3);
+                    p.currentRadius = p.returnStartRadius * (1 - e);
+                    p.currentAngle += p.orbitSpeed * (1 - e) * 0.4;
+                    p.selfRotation += p.selfSpin * (1 - e) * 0.2;
+                    p.opacity = Math.max(0, 1 - e);
                 }
-            }
-            draw() {
-                const alpha = Math.max(0, this.life / this.maxLife);
-                const size = this.glitch ? this.size * 3 : this.size;
+
+                const ox = p.cx + Math.cos(p.currentAngle) * p.currentRadius;
+                const oy = p.cy + Math.sin(p.currentAngle) * p.currentRadius;
+
                 ctx.save();
-                ctx.shadowBlur = this.glitch ? 20 : 10;
-                ctx.shadowColor = this.hue === 0 ? `rgba(255,0,0,${alpha})` : `rgba(0,100,255,${alpha})`;
-                ctx.strokeStyle = this.hue === 0
-                    ? `rgba(255,${50 + Math.random()*50},${50 + Math.random()*50},${alpha})`
-                    : `rgba(${50 + Math.random()*50},${100 + Math.random()*50},255,${alpha})`;
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.moveTo(this.x - size, this.y);
-                ctx.lineTo(this.x + size, this.y);
-                ctx.moveTo(this.x, this.y - size);
-                ctx.lineTo(this.x, this.y + size);
-                ctx.stroke();
-                ctx.fillStyle = this.hue === 0 ? `rgba(255,50,50,${alpha})` : `rgba(50,100,255,${alpha})`;
-                ctx.shadowBlur = 0;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, size * 0.3, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.globalAlpha = p.opacity;
+                ctx.translate(ox, oy);
+                ctx.rotate(p.selfRotation);
+                ctx.beginPath(); ctx.moveTo(0, 0);
+                ctx.arc(0, 0, p.rect.width * 1.5, p.angleA, p.angleB);
+                ctx.closePath(); ctx.clip();
+                ctx.translate(-p.cx, -p.cy);
+                ctx.drawImage(group.offscreenCanvas, p.rect.left, p.rect.top, p.rect.width, p.rect.height);
+
+                const tintHue = (group.id * 37) % 360;
+                ctx.globalCompositeOperation = 'screen';
+                ctx.fillStyle = `hsla(${tintHue}, 80%, 50%, ${0.08 + (group.id % 3) * 0.04})`;
+                ctx.fillRect(p.rect.left, p.rect.top, p.rect.width, p.rect.height);
+                ctx.globalCompositeOperation = 'source-over';
                 ctx.restore();
             }
+            if (!alive && group.phase === 'returning') { group.done = true; group.pieces = []; group.offscreenCanvas = null; }
         }
+        splitGroups = splitGroups.filter(g => !g.done);
+    }
 
-        for (let i = 0; i < SPARKLE_COUNT; i++) {
-            sparkles.push(new Sparkle());
-        }
+    /* ---- 3D model ---- */
+    let modelScene = null;
 
-        // ─── Glitch timing ───
-        let glitchActive = false;
-
-        function triggerGlitchBurst() {
-            glitchActive = true;
-            const ox = (Math.random() - 0.5) * 20;
-            const oy = (Math.random() - 0.5) * 10;
-            ghostRed.style.transform = `translate(${ox}px, ${oy}px)`;
-            ghostBlue.style.transform = `translate(${-ox}px, ${-oy}px)`;
-            img.style.filter = `
-                hue-rotate(${Math.random() * 360}deg)
-                contrast(${1.5 + Math.random() * 2})
-                brightness(${1 + Math.random() * 0.5})
-            `;
-            setTimeout(() => {
-                glitchActive = false;
-                ghostRed.style.transform = 'translate(0,0)';
-                ghostBlue.style.transform = 'translate(0,0)';
-                img.style.filter = 'none';
-            }, 150 + Math.random() * 200);
-        }
-
-        setInterval(() => {
-            if (!glitchActive && Math.random() < 0.4) {
-                triggerGlitchBurst();
-            }
-        }, 1000 + Math.random() * 3000);
-
-        // ─── Image split-spin system — multi-layer ───
-        let splitGroups = [];
-        let layerCount = 0;
-
-        function captureImage() {
-            const rect = img.getBoundingClientRect();
-            const offscreen = document.createElement('canvas');
-            offscreen.width = rect.width;
-            offscreen.height = rect.height;
-            const offCtx = offscreen.getContext('2d');
-            offCtx.drawImage(img, 0, 0, rect.width, rect.height);
-            return { canvas: offscreen, rect };
-        }
-
-        function createSplitGroup() {
-            const { canvas: offscreenCanvas, rect } = captureImage();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            const NUM_SLICES = 8 + Math.floor(Math.random() * 4);
-            const pieces = [];
-
-            for (let i = 0; i < NUM_SLICES; i++) {
-                const angleA = (i / NUM_SLICES) * Math.PI * 2;
-                const angleB = ((i + 1) / NUM_SLICES) * Math.PI * 2;
-
-                const orbitRadius = 60 + Math.random() * 150 + layerCount * 15;
-                const orbitSpeed = (0.006 + Math.random() * 0.014) * (Math.random() > 0.5 ? 1 : -1);
-                const selfSpin = (0.02 + Math.random() * 0.035) * (Math.random() > 0.5 ? 1 : -1);
-
-                pieces.push({
-                    angleA, angleB,
-                    currentAngle: Math.random() * Math.PI * 2,
-                    orbitRadius,
-                    orbitSpeed,
-                    selfRotation: 0,
-                    selfSpin,
-                    currentRadius: 8,
-                    targetRadius: orbitRadius,
-                    opacity: 1,
-                    rect, cx, cy,
-                    expandProgress: 0,
-                    phase: 'expanding',
-                    returnProgress: 0,
-                    returnStartRadius: 0,
-                    homeX: cx,
-                    homeY: cy,
-                });
-            }
-
-            const group = {
-                pieces,
-                offscreenCanvas,
-                phase: 'expanding',
-                age: 0,
-                id: layerCount++,
-                done: false,
-            };
-
-            splitGroups.push(group);
-            return group;
-        }
-
-        function returnLatestGroup() {
-            if (!splitGroups.length) return;
-            for (let i = splitGroups.length - 1; i >= 0; i--) {
-                const g = splitGroups[i];
-                if (g.phase === 'returning' || g.done) continue;
-                g.phase = 'returning';
-                for (const p of g.pieces) {
-                    p.returnStartRadius = p.currentRadius;
-                    p.returnProgress = 0;
-                    p.homeX = p.cx + (Math.random() - 0.5) * 4;
-                    p.homeY = p.cy + (Math.random() - 0.5) * 4;
-                }
-                break;
-            }
-        }
-
-        function drawSplitPieces() {
-            // Draw oldest groups first (lower layers)
-            for (let gi = 0; gi < splitGroups.length; gi++) {
-                const group = splitGroups[gi];
-                group.age++;
-
-                if (group.done) continue;
-
-                // Auto-remove groups older than ~25 seconds
-                if (group.age > 1500 && group.phase === 'orbiting') {
-                    group.phase = 'returning';
-                    for (const p of group.pieces) {
-                        p.returnStartRadius = p.currentRadius;
-                        p.returnProgress = 0;
-                        p.homeX = p.cx + (Math.random() - 0.5) * 4;
-                        p.homeY = p.cy + (Math.random() - 0.5) * 4;
-                    }
-                }
-
-                let anyAlive = false;
-
-                for (const p of group.pieces) {
-                    if (p.opacity < 0.005) continue;
-                    anyAlive = true;
-
-                    if (p.phase === 'expanding') {
-                        p.expandProgress = Math.min(1, p.expandProgress + 0.025);
-                        const ease = 1 - Math.pow(1 - p.expandProgress, 3);
-                        p.currentRadius = 8 + (p.targetRadius - 8) * ease;
-                        p.currentAngle += p.orbitSpeed * ease;
-                        p.selfRotation += p.selfSpin * ease;
-                        if (p.expandProgress >= 1) p.phase = 'orbiting';
-                    }
-
-                    if (p.phase === 'orbiting') {
-                        p.currentAngle += p.orbitSpeed;
-                        p.selfRotation += p.selfSpin;
-                    }
-
-                    if (p.phase === 'returning') {
-                        p.returnProgress = Math.min(1, p.returnProgress + 0.018);
-                        const ease = 1 - Math.pow(1 - p.returnProgress, 3);
-                        p.currentRadius = p.returnStartRadius * (1 - ease);
-                        p.currentAngle += p.orbitSpeed * (1 - ease) * 0.4;
-                        p.selfRotation += p.selfSpin * (1 - ease) * 0.2;
-                        p.opacity = Math.max(0, 1 - ease);
-                    }
-
-                    const ox = p.cx + Math.cos(p.currentAngle) * p.currentRadius;
-                    const oyVal = p.cy + Math.sin(p.currentAngle) * p.currentRadius;
-
-                    ctx.save();
-                    ctx.globalAlpha = p.opacity;
-                    ctx.translate(ox, oyVal);
-                    ctx.rotate(p.selfRotation);
-
-                    ctx.beginPath();
-                    ctx.moveTo(0, 0);
-                    ctx.arc(0, 0, p.rect.width * 1.5, p.angleA, p.angleB);
-                    ctx.closePath();
-                    ctx.clip();
-                    ctx.translate(-p.cx, -p.cy);
-                    ctx.drawImage(group.offscreenCanvas, p.rect.left, p.rect.top, p.rect.width, p.rect.height);
-
-                    // Tint each layer differently
-                    const tintHue = (group.id * 37) % 360;
-                    ctx.globalCompositeOperation = 'screen';
-                    ctx.fillStyle = `hsla(${tintHue}, 80%, 50%, ${0.08 + (group.id % 3) * 0.04})`;
-                    ctx.fillRect(p.rect.left, p.rect.top, p.rect.width, p.rect.height);
-                    ctx.globalCompositeOperation = 'source-over';
-
-                    ctx.restore();
-                }
-
-                if (!anyAlive && group.phase === 'returning') {
-                    group.done = true;
-                    group.pieces = [];
-                    group.offscreenCanvas = null;
-                }
-            }
-
-            // Clean up done groups
-            splitGroups = splitGroups.filter(g => !g.done);
-
-        /* --- Show statue lady 3D model on click 15 --- */
-        function showStatueLady() {
-            if (modelScene) return;
+    function showStatueLady() {
+        if (modelScene) return;
+        try {
             modelScene = {};
-            try {
-                var scene = new THREE.Scene();
-                scene.background = new THREE.Color(0x0a0a0a);
-                
-                var camera = new THREE.PerspectiveCamera(45, modelContainer.clientWidth / modelContainer.clientHeight, 0.1, 100);
-                camera.position.set(0, 0.5, 3);
-                
-                var renderer = new THREE.WebGLRenderer({ antialias: true });
-                renderer.setSize(modelContainer.clientWidth, modelContainer.clientHeight);
-                renderer.setPixelRatio(window.devicePixelRatio);
-                modelContainer.appendChild(renderer.domElement);
-                
-                /* Lights */
-                var ambient = new THREE.AmbientLight(0x404060, 0.5);
-                scene.add(ambient);
-                var dirLight = new THREE.DirectionalLight(0xff4444, 1.2);
-                dirLight.position.set(2, 3, 4);
-                scene.add(dirLight);
-                var dirLight2 = new THREE.DirectionalLight(0x4444ff, 1.0);
-                dirLight2.position.set(-2, 1, 3);
-                scene.add(dirLight2);
-                
-                /* Load the GLB model */
-                var loader = new THREE.GLTFLoader();
-                loader.load(
-                    "./statueLadyExport1.glb",
-                    function(gltf) {
-                        var model = gltf.scene;
-                        /* Center the model */
-                        var box = new THREE.Box3().setFromObject(model);
-                        var center = box.getCenter(new THREE.Vector3());
-                        var size = box.getSize(new THREE.Vector3());
-                        var maxDim = Math.max(size.x, size.y, size.z);
-                        var scale = 2.0 / maxDim;
-                        model.scale.set(scale, scale, scale);
-                        model.position.sub(center.multiplyScalar(scale));
-                        scene.add(model);
-                        modelScene.model = model;
-                    },
-                    undefined,
-                    function(err) { console.error("GLB load error:", err); hint.textContent = "🗿 3D load error: " + err; }
-                );
-                
-                modelScene.scene = scene;
-                modelScene.camera = camera;
-                modelScene.renderer = renderer;
-                
-                /* Animation loop */
-                var rotSpeed = 0.01;
-                function animateModel() {
-                    if (!modelScene || !modelScene.renderer) return;
-                    if (modelScene.model) {
-                        modelScene.model.rotation.y += rotSpeed;
-                        modelScene.model.rotation.x += rotSpeed * 0.2;
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a0a);
+            const camera = new THREE.PerspectiveCamera(45, modelContainer.clientWidth / modelContainer.clientHeight || 1, 0.1, 100);
+            camera.position.set(0, 0.5, 3);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(modelContainer.clientWidth || 800, modelContainer.clientHeight || 600);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            modelContainer.appendChild(renderer.domElement);
+
+            const ambient = new THREE.AmbientLight(0x404060, 0.5);
+            scene.add(ambient);
+            const dl1 = new THREE.DirectionalLight(0xff4444, 1.2);
+            dl1.position.set(2, 3, 4); scene.add(dl1);
+            const dl2 = new THREE.DirectionalLight(0x4444ff, 1.0);
+            dl2.position.set(-2, 1, 3); scene.add(dl2);
+
+            const loader = new THREE.GLTFLoader();
+            loader.load('./statueLadyExport1.glb', function(gltf) {
+                const model = gltf.scene;
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const scale = 2.0 / Math.max(size.x, size.y, size.z);
+                model.scale.set(scale, scale, scale);
+                model.position.sub(center.multiplyScalar(scale));
+                scene.add(model);
+                modelScene.model = model;
+                const el = document.getElementById('modelLoading');
+                if (el) el.style.display = 'none';
+            }, undefined, function(err) { console.error('GLB error', err); });
+
+            modelScene.scene = scene;
+            modelScene.camera = camera;
+            modelScene.renderer = renderer;
+
+            function anim() {
+                if (!modelScene || !modelScene.renderer) return;
+                if (modelScene.model) { modelScene.model.rotation.y += 0.01; modelScene.model.rotation.x += 0.002; }
+                modelScene.renderer.render(modelScene.scene, modelScene.camera);
+                requestAnimationFrame(anim);
+            }
+            anim();
+
+            function onResize() {
+                if (!modelScene || !modelScene.renderer) return;
+                modelScene.camera.aspect = modelContainer.clientWidth / modelContainer.clientHeight || 1;
+                modelScene.camera.updateProjectionMatrix();
+                modelScene.renderer.setSize(modelContainer.clientWidth || 800, modelContainer.clientHeight || 600);
+            }
+            window.addEventListener('resize', onResize);
+            modelScene.onResize = onResize;
+        } catch (e) { console.error('Three.js error', e); }
+    }
+
+    /* ---- click handler ---- */
+    img.addEventListener('click', () => {
+        clickCount++;
+
+        /* hide 3D model on non-15 clicks */
+        try {
+            if (modelScene && modelOverlay.classList.contains('show') && clickCount % 15 !== 0) {
+                modelOverlay.classList.remove('show');
+                if (modelScene.renderer) {
+                    modelScene.renderer.dispose();
+                    if (modelScene.renderer.domElement && modelScene.renderer.domElement.parentNode) {
+                        modelScene.renderer.domElement.parentNode.removeChild(modelScene.renderer.domElement);
                     }
-                    modelScene.renderer.render(modelScene.scene, modelScene.camera);
-                    requestAnimationFrame(animateModel);
                 }
-                animateModel();
-                
-                /* Resize handler */
-                function onModelResize() {
-                    if (!modelScene || !modelScene.renderer) return;
-                    modelScene.camera.aspect = modelContainer.clientWidth / modelContainer.clientHeight;
-                    modelScene.camera.updateProjectionMatrix();
-                    modelScene.renderer.setSize(modelContainer.clientWidth, modelContainer.clientHeight);
-                }
-                window.addEventListener("resize", onModelResize);
-                modelScene.onResize = onModelResize;
-            } catch(e) { console.error("Three.js error:", e); }
-        }
-
-        }
-
-        // ─── Fart trigger with multi-layer split-spin ───
-        img.addEventListener('click', () => {
-            clickCount++;
-            hint.textContent = `👆 clicks: ${clickCount} ${clickCount % 10 === 0 ? '🔥 BONUS ROUND 🔥' : '| click the statue'}`;
-            audio.currentTime = 0;
-            audio.play().catch(() => {});
-
-            // Every 10th click: bonus climax sound
-            if (clickCount % 10 === 0) {
-                bonusAudio.currentTime = 0;
-                bonusAudio.play().catch(() => {});
-                // Show the bonus overlay
-                bonusOverlay.classList.add('show');
-                bonusLabel.classList.add('show');
-                // Mega-glitch burst on the 10th
-                for (let i = 0; i < 8; i++) {
-                    setTimeout(() => {
-                        const ox = (Math.random() - 0.5) * 50;
-                        const oy = (Math.random() - 0.5) * 25;
-                        ghostRed.style.transform = `translate(${ox}px,${oy}px)`;
-                        ghostRed.style.opacity = Math.random() * 0.7 + 0.3;
-                        ghostBlue.style.transform = `translate(${-ox}px,${-oy}px)`;
-                        ghostBlue.style.opacity = Math.random() * 0.7 + 0.3;
-                        img.style.filter = `
-                            hue-rotate(${Math.random() * 360}deg)
-                            contrast(${3 + Math.random() * 4})
-                            brightness(${1.5 + Math.random() * 1.5})
-                            saturate(${3 + Math.random() * 3})
-                        `;
-                    }, i * 40);
-                }
-                setTimeout(() => {
-                    ghostRed.style.transform = 'translate(0,0)';
-                    ghostRed.style.opacity = '0';
-                    ghostBlue.style.transform = 'translate(0,0)';
-                    ghostBlue.style.opacity = '0';
-                    img.style.filter = 'none';
-                }, 700);
-            }
-
-            // Every 15th click: statue lady 3D model
-            if (clickCount % 15 === 0) {
-                ladyAudio.currentTime = 0;
-                ladyAudio.play().catch(() => {});
-                modelOverlay.classList.add('show');
-                showStatueLady();
-                hint.textContent = `👆 clicks: ${clickCount} 🗿 STATUE LADY 🗿`;
-            }
-
-            // Mega glitch
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    const ox = (Math.random() - 0.5) * 30;
-                    const oy = (Math.random() - 0.5) * 15;
-                    ghostRed.style.transform = `translate(${ox}px,${oy}px)`;
-                    ghostRed.style.opacity = Math.random() * 0.5 + 0.2;
-                    ghostBlue.style.transform = `translate(${-ox}px,${-oy}px)`;
-                    ghostBlue.style.opacity = Math.random() * 0.5 + 0.2;
-                    img.style.filter = `
-                        hue-rotate(${Math.random() * 360}deg)
-                        contrast(${2 + Math.random() * 3})
-                        brightness(${1.2 + Math.random() * 0.8})
-                        saturate(${2 + Math.random() * 2})
-                    `;
-                }, i * 60);
-            }
-            setTimeout(() => {
-                ghostRed.style.transform = 'translate(0,0)';
-                ghostRed.style.opacity = '0';
-                ghostBlue.style.transform = 'translate(0,0)';
-                ghostBlue.style.opacity = '0';
-                img.style.filter = 'none';
-                if (!splitActive) img.style.opacity = '1';
-            }, 400);
-
-            // Add a new split layer
-            const newGroup = createSplitGroup();
-            const depth = Math.min(splitGroups.length, 10);
-            img.style.opacity = `${Math.max(0.05, 1 - depth * 0.08)}`;
-        });
-
-        // When fart sound ends: return the most recent split layer
-        audio.addEventListener('ended', () => {
-            returnLatestGroup();
-            const activeLayers = splitGroups.filter(g => !g.done && g.phase !== 'returning').length;
-            img.style.opacity = `${Math.max(0.1, 1 - activeLayers * 0.08)}`;
-        });
-
-        // When statue lady sound ends: hide the 3D model
-        ladyAudio.addEventListener('ended', () => {
-            modelOverlay.classList.remove('show');
-            if (modelScene) {
-                modelScene.renderer.dispose();
-                if (modelScene.renderer.domElement && modelScene.renderer.domElement.parentNode) {
-                    modelScene.renderer.domElement.parentNode.removeChild(modelScene.renderer.domElement);
-                }
+                if (modelScene.onResize) window.removeEventListener('resize', modelScene.onResize);
                 modelScene = null;
             }
-        });
+        } catch (e) { /* don't crash */ }
 
-        // When bonus sound ends: return ALL layers at once (clean sweep)
-        bonusAudio.addEventListener('ended', () => {
-            let count = 0;
-            for (const g of splitGroups) {
-                if (g.phase === 'returning' || g.done) continue;
-                g.phase = 'returning';
-                for (const p of g.pieces) {
-                    p.returnStartRadius = p.currentRadius;
-                    p.returnProgress = 0;
-                    p.homeX = p.cx + (Math.random() - 0.5) * 4;
-                    p.homeY = p.cy + (Math.random() - 0.5) * 4;
-                }
-                count++;
+        hint.textContent = `👆 clicks: ${clickCount} ${clickCount % 10 === 0 ? '🔥 BONUS' : clickCount % 15 === 0 ? '🗿 LADY' : '| click'}`;
+
+        /* fart */
+        audio.currentTime = 0;
+        audio.play().catch(function(){});
+
+        /* click 10: bonus */
+        if (clickCount % 10 === 0) {
+            bonusAudio.currentTime = 0;
+            bonusAudio.play().catch(function(){});
+            bonusOverlay.classList.add('show');
+            bonusLabel.classList.add('show');
+            for (let i = 0; i < 8; i++) {
+                (function(n) { setTimeout(function() {
+                    var ox = (Math.random() - 0.5) * 50, oy = (Math.random() - 0.5) * 25;
+                    ghostRed.style.transform = 'translate(' + ox + 'px,' + oy + 'px)';
+                    ghostRed.style.opacity = Math.random() * 0.7 + 0.3;
+                    ghostBlue.style.transform = 'translate(' + (-ox) + 'px,' + (-oy) + 'px)';
+                    ghostBlue.style.opacity = Math.random() * 0.7 + 0.3;
+                    img.style.filter = 'hue-rotate(' + (Math.random() * 360) + 'deg) contrast(' + (3 + Math.random() * 4) + ') brightness(' + (1.5 + Math.random() * 1.5) + ') saturate(' + (3 + Math.random() * 3) + ')';
+                }, n * 40); })(i);
             }
-            bonusOverlay.classList.remove('show');
-            bonusLabel.classList.remove('show');
-            img.style.opacity = '0.8';
-        });
-
-        // ─── Animation loop ───
-        function animate() {
-            ctx.clearRect(0, 0, W, H);
-
-            // Glitch bars
-            if (Math.random() < 0.02) {
-                const y = Math.random() * H;
-                const h = Math.random() * 4 + 1;
-                const fill = ctx.createLinearGradient(0, y, W, y);
-                fill.addColorStop(0, `rgba(255,0,0,${Math.random() * 0.3})`);
-                fill.addColorStop(0.3, `rgba(255,0,0,0)`);
-                fill.addColorStop(0.5, `rgba(0,100,255,${Math.random() * 0.3})`);
-                fill.addColorStop(0.7, `rgba(0,100,255,0)`);
-                fill.addColorStop(1, `rgba(255,0,0,${Math.random() * 0.3})`);
-                ctx.fillStyle = fill;
-                ctx.fillRect(0, y, W, h);
-            }
-            if (Math.random() < 0.01) {
-                const y = Math.random() * H;
-                const h = Math.random() * 3 + 1;
-                ctx.fillStyle = Math.random() > 0.5
-                    ? `rgba(255,0,0,${Math.random() * 0.15})`
-                    : `rgba(0,100,255,${Math.random() * 0.15})`;
-                ctx.fillRect(0, y, W, h);
-            }
-
-            // Draw split-spin pieces
-            drawSplitPieces();
-
-            // Sparkles
-            for (const s of sparkles) {
-                s.update();
-                s.draw();
-            }
-
-            requestAnimationFrame(animate);
+            setTimeout(function() {
+                ghostRed.style.transform = ''; ghostRed.style.opacity = '0';
+                ghostBlue.style.transform = ''; ghostBlue.style.opacity = '0';
+                img.style.filter = 'none';
+            }, 700);
         }
-        animate();
+
+        /* click 15: 3D model */
+        if (clickCount % 15 === 0) {
+            modelOverlay.classList.add('show');
+            showStatueLady();
+        }
+
+        /* mega glitch */
+        for (let i = 0; i < 5; i++) {
+            (function(n) { setTimeout(function() {
+                var ox = (Math.random() - 0.5) * 30, oy = (Math.random() - 0.5) * 15;
+                ghostRed.style.transform = 'translate(' + ox + 'px,' + oy + 'px)';
+                ghostRed.style.opacity = Math.random() * 0.5 + 0.2;
+                ghostBlue.style.transform = 'translate(' + (-ox) + 'px,' + (-oy) + 'px)';
+                ghostBlue.style.opacity = Math.random() * 0.5 + 0.2;
+                img.style.filter = 'hue-rotate(' + (Math.random() * 360) + 'deg) contrast(' + (2 + Math.random() * 3) + ') brightness(' + (1.2 + Math.random() * 0.8) + ') saturate(' + (2 + Math.random() * 2) + ')';
+            }, n * 60); })(i);
+        }
+        setTimeout(function() {
+            ghostRed.style.transform = ''; ghostRed.style.opacity = '0';
+            ghostBlue.style.transform = ''; ghostBlue.style.opacity = '0';
+            img.style.filter = 'none';
+        }, 400);
+
+        /* split layer */
+        var newGroup = createSplitGroup();
+        var depth = Math.min(splitGroups.length, 10);
+        img.style.opacity = '' + Math.max(0.05, 1 - depth * 0.08);
+    });
+
+    /* fart ended: return latest layer */
+    audio.addEventListener('ended', function() {
+        returnLatestGroup();
+        var active = splitGroups.filter(function(g) { return !g.done && g.phase !== 'returning'; }).length;
+        img.style.opacity = '' + Math.max(0.1, 1 - active * 0.08);
+    });
+
+    /* bonus ended: return all layers */
+    bonusAudio.addEventListener('ended', function() {
+        splitGroups.forEach(function(g) {
+            if (g.phase === 'returning' || g.done) return;
+            g.phase = 'returning';
+            g.pieces.forEach(function(p) { p.returnStartRadius = p.currentRadius; p.returnProgress = 0; p.homeX = p.cx + (Math.random()-0.5)*4; p.homeY = p.cy + (Math.random()-0.5)*4; });
+        });
+        bonusOverlay.classList.remove('show');
+        bonusLabel.classList.remove('show');
+        img.style.opacity = '0.8';
+    });
+
+    /* ---- animation loop ---- */
+    function loop() {
+        ctx.clearRect(0, 0, W, H);
+        drawGlitchBars();
+        drawSplitPieces();
+        drawSparkles();
+        requestAnimationFrame(loop);
+    }
+    loop();
     </script>
 </body>
 </html>
