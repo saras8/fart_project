@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fart project</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a1a;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .statue {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        .statue:active {
+            transform: scale(0.97);
+        }
+        .statue:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+        }
+        .hint {
+            color: #888;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img
+            id="statue"
+            class="statue"
+            src="https://images.pdimagearchive.org/essays/the-spiralist/b28127833_0294-edit.jpg"
+            alt="Statue — click to make a fart sound"
+            draggable="false"
+        />
+        <p class="hint">👆 click the statue</p>
+    </div>
+
+    <audio id="fartSound" preload="auto" src="https://cdn.freesound.org/previews/833/833105_17959155-lq.mp3"></audio>
+
+    <script>
+        const img = document.getElementById('statue');
+        const audio = document.getElementById('fartSound');
+
+        img.addEventListener('click', () => {
+            audio.currentTime = 0;
+            audio.play().catch(() => {});
+        });
+    </script>
+</body>
+</html>
