@@ -71,7 +71,6 @@
             position: fixed; inset: 0; z-index: 30;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-            background: rgba(0,0,0,0.85);
         }
         .model-overlay.show { opacity: 1; pointer-events: auto; }
         #modelContainer { width: 80vw; height: 80vh; }
@@ -324,10 +323,10 @@
         try {
             modelScene = {};
             const scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0a0a0a);
+            // scene.background = new THREE.Color(0x0a0a0a);
             const camera = new THREE.PerspectiveCamera(45, modelContainer.clientWidth / modelContainer.clientHeight || 1, 0.1, 100);
             camera.position.set(0, 0.5, 3);
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(modelContainer.clientWidth || 800, modelContainer.clientHeight || 600);
             renderer.setPixelRatio(window.devicePixelRatio);
             modelContainer.appendChild(renderer.domElement);
